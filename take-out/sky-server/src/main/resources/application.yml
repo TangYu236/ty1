@@ -1,0 +1,73 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  main:
+    allow-circular-references: true
+  datasource:
+    druid:
+      driver-class-name: ${sky.datasource.driver-class-name}
+      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${sky.datasource.username}
+      password: ${sky.datasource.password}
+
+      # 新增连接池空闲连接管理配置
+      initial-size: 5      # 初始连接数
+      min-idle: 5          # 最小空闲连接数
+      max-active: 20       # 最大连接数
+      max-wait: 60000      # 获取连接超时时间（毫秒）
+      # 空闲连接超时设置（核心修复点）
+      time-between-eviction-runs-millis: 60000  # 检测间隔（60秒）
+      min-evictable-idle-time-millis: 1800000    # 连接最小空闲时间（30分钟）
+      max-evictable-idle-time-millis: 25200000   # 连接最大空闲时间（7小时）
+      # 保活检测
+      keep-alive: true                           # 开启保活
+      validation-query: SELECT 1                 # 心跳SQL
+      test-while-idle: true                      # 空闲时检测
+      test-on-borrow: false                      # 借出时不检测（性能优化）
+      test-on-return: false                      # 归还时不检测（性能优化）
+  redis:
+    port: ${sky.redis.port}
+    password: ${sky.redis.password}
+    host: ${sky.redis.host}
+    database: ${sky.redis.database}
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.sky.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com:
+      sky:
+        mapper: debug
+        service: info
+        controller: info
+
+sky:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: itcast
+    # 设置jwt过期时间
+    admin-ttl: 720000000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: itheima
+    user-ttl: 720000000000
+    user-token-name: authentication
+  alioss:
+    endpoint: ${sky.alioss.endpoint}
+    access-key-id: ${sky.alioss.access-key-id}
+    access-key-secret: ${sky.alioss.access-key-secret}
+    bucket-name: ${sky.alioss.bucket-name}
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
+    notifyUrl: ${sky.wechat.notifyUrl}
+    refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
